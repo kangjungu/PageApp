@@ -19,18 +19,33 @@ class ViewController: UIViewController,UIPageViewControllerDelegate,UIPageViewCo
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //데이터 모델 구성
         createContentPages()
         
+        //페이지가 접히는 것을 설정하고 이동방햐을 수평으로 설정한 UIPageViewController 클래스의 인스턴스를 생성
         pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
-        
+        //현재 클래스는 페이지 컨트롤러를 위한 데이터 소스이자 델리게이트로 동작할것이므로 이렇게 설정해준다.
         pageController?.delegate = self
         pageController?.dataSource = self
         
+        //첫번 째 페이지를 표시하기위해 뷰컨트롤러 생성하고
         let startingViewController: ContentViewController = viewControllerAtIndex(0)!
-        
+        //위에서 생성한 뷰컨트롤러를 배열객체에 할당한다.
         let viewControllers: NSArray = [startingViewController]
-        //page 334부터 하기 
-        pageController?.setViewControllers(viewControllers, direction: <#T##UIPageViewControllerNavigationDirection#>, animated: <#T##Bool#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
+        //콘텐트 뷰 컨트롤러를 저장하고 있는 배열이 완성되면 이 배열을 뷰 컨트롤러에 할당해야함. 내비게이션 방향은 앞쪽으로 설정
+        pageController?.setViewControllers(viewControllers as?[UIViewController],
+                                           direction: .Forward,
+                                           animated: false,
+                                           completion: nil)
+        
+        //페이지 뷰 컨트롤러를 현재의 뷰애 추가한다.
+        self.addChildViewController(pageController!)
+        self.view.addSubview(self.pageController!.view)
+        
+        //페이지가 전체화면을 가득 채우도록하는 코드를 추가한다.
+        let pageViewRect = self.view.bounds
+        pageController!.view.frame = pageViewRect
+        pageController!.didMoveToParentViewController(self)
     }
     
     //html 문자열로 배열을 구성하는 메서드
